@@ -1,73 +1,89 @@
-# React + TypeScript + Vite
+# 🛡️ AegisDrive Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> The central command center for the **AegisDrive Vehicle Safety Ecosystem**.
 
-Currently, two official plugins are available:
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![React](https://img.shields.io/badge/React-18.2-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Vite](https://img.shields.io/badge/Vite-4.0-purple)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-3.0-cyan)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📖 Overview
 
-## React Compiler
+**AegisDrive** is a locally manufactured, AI-powered vehicle safety system that aims to prevent accidents and provide real-time evidence. This repository contains the **Frontend Dashboard**, a React-based web application that empowers fleet managers to:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Monitor** vehicle locations in real-time.
+- **Receive** instant critical alerts (drowsiness, distraction, crash) via SignalR.
+- **Review** historical safety logs and visual evidence (images/metrics) from the Edge AI device.
+- **Analyze** driver behavior and safety scores.
 
-## Expanding the ESLint configuration
+## ✨ Key Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **🚨 Real-Time Alerts**: Instant red-screen popups for critical drowsiness events with latency under 200ms.
+- **🗺️ Live Fleet Map**: Interactive map to track active vehicles using GPS telemetry.
+- **📸 Incident Evidence**: Detailed view of safety events, including driver snapshots, road context, and EAR/MAR metrics.
+- **📊 Safety Logs**: Filterable history of all alerts (Critical, High, Warning), with controls for date and severity.
+- **⚡ SignalR Integration**: WebSocket-based live connection to the AegisDrive .NET backend for instant data updates.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🏗️ Architecture
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+This project is a part of a distributed IoT ecosystem:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. **Edge Device (C++)**: A Raspberry Pi running OpenCV that detects drowsiness and publishes messages.
+2. **Backend API (.NET)**: Processes telemetry data and broadcasts updates to the frontend.
+3. **Frontend (React)**: Consumes updates from the backend via `SignalRContext` and visualizes data.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Ensure that you have the following installed:
+
+- **Node.js** (v18 or higher)
+- **npm** or **yarn** (choose one)
+
+### Installation
+
+1. **Clone the repository**:
+
+    ```bash
+    git clone https://github.com/your-username/aegis-drive-dashboard.git
+    cd aegis-drive-dashboard
+    ```
+
+2. **Install dependencies**:
+
+    ```bash
+    npm install
+    ```
+
+3. **Configure Environment Variables**:
+
+    Create a `.env` file in the root directory of your project with the following content:
+
+    ```env
+    VITE_API_BASE_URL=https://localhost:7199/api/v1
+    VITE_SIGNALR_HUB_URL=https://localhost:7199/hubs/fleet
+    ```
+
+4. **Run the Development Server**:
+
+    ```bash
+    npm run dev
+    ```
+
+    Once the server is running, you can access the app at [http://localhost:5173](http://localhost:5173).
+
+## 📂 Project Structure
+
+The project is organized as follows:
+
+```text
+src/
+├── api/             # Axios setup and API service calls
+├── components/      # Reusable UI components (e.g., Layout, Cards, Popups)
+├── context/         # React Context for state management (e.g., Auth, SignalR connection)
+├── features/        # Feature-based folders (e.g., Map, Events, Auth)
+├── types/           # TypeScript interfaces (e.g., IncidentDetails, Telemetry)
+└── App.tsx          # Main entry point with routing setup
 ```
