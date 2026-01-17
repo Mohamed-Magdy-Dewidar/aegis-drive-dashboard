@@ -6,8 +6,9 @@ import {
   type SafetyEventSummary,
   type SafetyEventsQuery,
   AlertLevel,
-  AlertLevelLabels
+  AlertLevelLabels,
 } from "../../types";
+import { Filter, RotateCw } from "lucide-react";
 
 export const SafetyEventsLogPage = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export const SafetyEventsLogPage = () => {
   const [filters, setFilters] = useState<{
     fromDate: string;
     toDate: string;
-    minLevel: string; 
+    minLevel: string;
   }>({
     fromDate: "",
     toDate: "",
@@ -38,7 +39,9 @@ export const SafetyEventsLogPage = () => {
         pageSize,
         fromDate: filters.fromDate || undefined,
         toDate: filters.toDate || undefined,
-        minLevel: filters.minLevel ? (Number(filters.minLevel) as AlertLevel) : undefined,
+        minLevel: filters.minLevel
+          ? (Number(filters.minLevel) as AlertLevel)
+          : undefined,
       };
 
       const result = await fleetApi.getSafetyEvents(query);
@@ -51,7 +54,7 @@ export const SafetyEventsLogPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, filters]); 
+  }, [page, filters]);
 
   useEffect(() => {
     fetchEvents();
@@ -61,7 +64,7 @@ export const SafetyEventsLogPage = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
-    setPage(1); 
+    setPage(1);
   };
 
   // Helper for Badge Colors
@@ -82,58 +85,80 @@ export const SafetyEventsLogPage = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
+      {/* ✅ HEADER: Fixed to be White text */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Safety Event Log</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-white">Safety Event Log</h1>
+          <p className="text-gray-400 mt-1">
+            History of all detected fleet incidents.
+          </p>
+        </div>
         <button
           onClick={fetchEvents}
-          className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-sm font-medium transition"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium shadow-lg"
         >
-          Refresh
+          <RotateCw size={18} /> Refresh
         </button>
       </div>
-
-      {/* --- Filters --- */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            From Date
-          </label>
-          <input
-            type="date"
-            name="fromDate"
-            value={filters.fromDate}
-            onChange={handleFilterChange}
-            className="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm p-2 border"
-          />
+      {/* --- Filters with New Styling --- */}
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-8">
+        <div className="flex items-center gap-2 mb-3 text-gray-700 font-semibold border-b pb-2">
+          <Filter size={18} /> Filter Options
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            To Date
-          </label>
-          <input
-            type="date"
-            name="toDate"
-            value={filters.toDate}
-            onChange={handleFilterChange}
-            className="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm p-2 border"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Min Severity
-          </label>
-          <select
-            name="minLevel"
-            value={filters.minLevel}
-            onChange={handleFilterChange}
-            className="w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm p-2 border"
-          >
-            <option value="">All Levels</option>
-            <option value="1">Low</option>
-            <option value="2">Medium</option>
-            <option value="3">High</option>
-            <option value="4">Critical</option>
-          </select>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* From Date */}
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">
+              From Date
+            </label>
+            <input
+              type="date"
+              name="fromDate"
+              value={filters.fromDate}
+              onChange={handleFilterChange}
+              className="w-full border border-gray-300 rounded-lg p-2 text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+          {/* To Date */}
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">
+              To Date
+            </label>
+            <input
+              type="date"
+              name="toDate"
+              value={filters.toDate}
+              onChange={handleFilterChange}
+              className="w-full border border-gray-300 rounded-lg p-2 text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+          {/* Min Severity */}
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">
+              Min Severity
+            </label>
+            <select
+              name="minLevel"
+              value={filters.minLevel}
+              onChange={handleFilterChange}
+              className="w-full border border-gray-300 rounded-lg p-2 text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+              <option value="">All Levels</option>
+              <option value="1">Low</option>
+              <option value="2">Medium</option>
+              <option value="3">High</option>
+              <option value="4">Critical</option>
+            </select>
+          </div>
+          {/* Apply Filters Button */}
+          <div className="flex items-end">
+            <button
+              onClick={fetchEvents}
+              className="w-full py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg transition-colors border border-gray-300"
+            >
+              Apply Filters
+            </button>
+          </div>
         </div>
       </div>
 
@@ -151,16 +176,28 @@ export const SafetyEventsLogPage = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Severity
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Time
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Driver / Vehicle
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Message
                 </th>
                 <th scope="col" className="relative px-6 py-3">
@@ -170,11 +207,18 @@ export const SafetyEventsLogPage = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {data.map((event) => (
-                <tr key={event.id} className="hover:bg-gray-50 transition-colors">
+                <tr
+                  key={event.id}
+                  className="hover:bg-gray-50 transition-colors"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     {/* ✅ FIX: Use '?? 0' to handle undefined values safely */}
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full border ${getBadgeColor(event.alertLevel ?? 0)}`}>
-                      {AlertLevelLabels[event.alertLevel ?? 0] || 'Unknown'}
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full border ${getBadgeColor(
+                        event.alertLevel ?? 0
+                      )}`}
+                    >
+                      {AlertLevelLabels[event.alertLevel ?? 0] || "Unknown"}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -211,11 +255,20 @@ export const SafetyEventsLogPage = () => {
         <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
           <div>
             <p className="text-sm text-gray-700">
-              Showing <span className="font-medium">{(page - 1) * pageSize + 1}</span> to <span className="font-medium">{Math.min(page * pageSize, totalItems)}</span> of <span className="font-medium">{totalItems}</span> results
+              Showing{" "}
+              <span className="font-medium">{(page - 1) * pageSize + 1}</span>{" "}
+              to{" "}
+              <span className="font-medium">
+                {Math.min(page * pageSize, totalItems)}
+              </span>{" "}
+              of <span className="font-medium">{totalItems}</span> results
             </p>
           </div>
           <div>
-            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <nav
+              className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+              aria-label="Pagination"
+            >
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
@@ -234,6 +287,7 @@ export const SafetyEventsLogPage = () => {
           </div>
         </div>
       </div>
+      
     </div>
   );
 };

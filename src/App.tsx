@@ -20,13 +20,8 @@ import { IncidentDetailsPage } from "./features/events/IncidentDetailsPage";
 
 import { SafetyEventsLogPage } from "./features/events/SafetyEventsLogPage";
 
-// Dummy Components
-const Dashboard = () => (
-  <div className="text-3xl font-bold p-10">Dashboard 📊</div>
-);
-const Fleet = () => (
-  <div className="text-3xl font-bold p-10">Fleet Management 🚚</div>
-);
+import { DashboardPage } from "./features/dashboard/DashboardPage";
+import { FleetManagementPage } from "./features/fleet/FleetManagementPage";
 
 const ProtectedRoute = ({ children }: { children: React.ReactElement }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -68,7 +63,7 @@ function App() {
               path="/"
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <DashboardPage />
                 </ProtectedRoute>
               }
             />
@@ -89,10 +84,10 @@ function App() {
               }
             />
             <Route
-              path="/fleet"
+              path="/fleet/*"
               element={
                 <ProtectedRoute>
-                  <Fleet />
+                  <FleetManagementPage />
                 </ProtectedRoute>
               }
             />

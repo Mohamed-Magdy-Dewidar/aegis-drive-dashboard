@@ -21,25 +21,21 @@ export const LoginPage = () => {
     try {
       const response = await authApi.login({ email, password });
 
-      console.log("✅ DATA RECEIVED IN LOGIN PAGE:", response); // Debug Log
-
       if (!response || !response.token) {
         throw new Error("Token is missing from response!");
       }
 
-      login(response.token, response.user);
+      // ✅ FIX: Only pass the token. AuthContext fetches the user profile automatically.
+      await login(response.token);
       navigate("/");
-    } catch (err: any) {
-      // 🔍 CRITICAL DEBUG LOG
-      console.error("🔴 LOGIN CRASHED:", err);
-
-      // If it's a network/server error, use that message.
-      // If it's a code crash, show the crash message.
-      const msg =
-        err.response?.data?.errorMessage ||
-        err.message ||
-        "Invalid credentials.";
-      setError(msg);
+    } catch (err) {
+      // Safe error handling without 'any'
+      if (err instanceof Error) {
+        setError(err.message);
+        console.error("Login error:", err.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
     } finally {
       setIsSubmitting(false);
     }
