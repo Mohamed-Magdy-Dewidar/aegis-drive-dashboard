@@ -1,6 +1,13 @@
 import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Truck, LogOut, Map, Clipboard } from "lucide-react";
+import { 
+  LayoutDashboard, 
+  Truck, 
+  LogOut, 
+  Map, 
+  Clipboard, 
+  Navigation // 🆕 Icon for Trip Mode
+} from "lucide-react";
 import clsx from "clsx";
 
 interface MainLayoutProps {
@@ -8,12 +15,12 @@ interface MainLayoutProps {
 }
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
-  // Hardcoded Nav Items for now
   const navItems = [
     { name: "Dashboard", path: "/", icon: LayoutDashboard },
     { name: "Live Map", path: "/map", icon: Map },
+    { name: "Start Trip", path: "/drive", icon: Navigation }, // 🆕 New Driving Mode Route
     { name: "Fleet", path: "/fleet", icon: Truck },
-    { name: "Safety Logs", path: "/logs", icon: Clipboard }, // Replace `href` with `path`
+    { name: "Safety Logs", path: "/logs", icon: Clipboard },
   ];
 
   return (
@@ -30,7 +37,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           {navItems.map((item) => (
             <NavLink
               key={item.path}
-              to={item.path} // Always use `path`, guaranteed to be a string
+              to={item.path}
               className={({ isActive }) =>
                 clsx(
                   "flex items-center px-4 py-3 rounded-lg transition-colors",
@@ -46,8 +53,16 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           ))}
         </nav>
 
+        {/* LOGOUT SECTION */}
         <div className="p-4 border-t border-slate-700">
-          <button className="flex items-center w-full px-4 py-2 text-slate-400 hover:text-red-400 transition-colors">
+          <button 
+            onClick={() => {
+              // Standard logout cleanup
+              localStorage.removeItem('aegis_token');
+              window.location.href = '/login';
+            }}
+            className="flex items-center w-full px-4 py-2 text-slate-400 hover:text-red-400 transition-colors"
+          >
             <LogOut size={18} className="mr-3" />
             Logout
           </button>
@@ -55,7 +70,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       </aside>
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 overflow-y-auto p-8">{children}</main>
+      <main className="flex-1 overflow-y-auto bg-slate-900">
+        {children}
+      </main>
     </div>
   );
 };

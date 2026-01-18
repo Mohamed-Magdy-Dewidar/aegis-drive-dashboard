@@ -16,6 +16,37 @@ export interface PagedResult<T> {
 
 
 
+// Trip
+export interface TripResponse {
+    tripId: string;
+    geometry: {
+        type: string;
+        coordinates: number[][];
+    };
+    destinationText : string;
+    distance: number;
+    duration: number;
+    startLat: number;
+    startLng: number;
+    destinationLat: number;
+    destinationLng: number;
+}
+
+export interface TripSummary {
+    tripScore: number;
+    newGlobalDriverScore: number;
+    drowsinessEvents: number;
+    distractionEvents: number;
+    duration: string;
+}
+
+export interface DestinationOption {
+    value: string;
+    label: string;
+    lat: number;
+    lng: number;
+}
+
 export const AlertLevel = {
    NONE: 0,
    LOW: 1,

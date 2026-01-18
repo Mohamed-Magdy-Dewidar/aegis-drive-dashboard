@@ -17,11 +17,13 @@ import { LiveMapPage } from "./features/map/LiveMapPage";
 import { CriticalAlertPopup } from "./components/CriticalAlertPopup";
 
 import { IncidentDetailsPage } from "./features/events/IncidentDetailsPage";
-
 import { SafetyEventsLogPage } from "./features/events/SafetyEventsLogPage";
-
 import { DashboardPage } from "./features/dashboard/DashboardPage";
 import { FleetManagementPage } from "./features/fleet/FleetManagementPage";
+
+// 🆕 Import the Trip Management Orchestrator
+import { ActiveTripManager } from "./features/fleet/ActiveTripManager";
+import { TripProvider } from "./context/TripProvider";
 
 const ProtectedRoute = ({ children }: { children: React.ReactElement }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -29,8 +31,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactElement }) => {
 
   if (isLoading)
     return (
-      <div className="h-screen flex items-center justify-center">
-        Loading...
+      <div className="h-screen flex items-center justify-center bg-slate-950 text-white">
+        Loading AegisDrive...
       </div>
     );
   if (!isAuthenticated)
@@ -43,13 +45,41 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <TripProvider>
         <SignalRProvider>
-          {/* Global Alert Components */}
           <CriticalAlertPopup />
           <Toaster position="top-right" reverseOrder={false} />
 
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* 🆕 THE ACTIVE TRIP ROUTE */}
+            <Route
+              path="/drive"
+              element={
+                <ProtectedRoute>
+                  <ActiveTripManager />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/map"
+              element={
+                <ProtectedRoute>
+                  <LiveMapPage />
+                </ProtectedRoute>
+              }
+            />
 
             <Route
               path="/events/:eventId"
@@ -59,14 +89,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
-            />
+
             <Route
               path="/logs"
               element={
@@ -75,14 +98,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/map"
-              element={
-                <ProtectedRoute>
-                  <LiveMapPage />
-                </ProtectedRoute>
-              }
-            />
+
             <Route
               path="/fleet/*"
               element={
@@ -95,6 +111,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </SignalRProvider>
+        </TripProvider>
       </AuthProvider>
     </BrowserRouter>
   );
