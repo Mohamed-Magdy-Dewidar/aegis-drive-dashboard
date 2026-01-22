@@ -1,7 +1,8 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fleetApi } from '../../api/fleetApi';
 import { type IncidentDetails } from '../../types';
+import { MapPin, Gauge, Globe } from 'lucide-react'; // Added for better visuals
 import toast from 'react-hot-toast';
 
 export const IncidentDetailsPage = () => {
@@ -60,7 +61,6 @@ export const IncidentDetailsPage = () => {
         
         {/* Left Column: Visual Evidence */}
         <div className="space-y-6">
-          {/* ✅ FIX 1: Added text-gray-900 to force black text inside white card */}
           <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 text-gray-900">
             <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-gray-900">
               📸 Driver Camera
@@ -76,11 +76,9 @@ export const IncidentDetailsPage = () => {
               <div className="h-64 bg-gray-100 flex items-center justify-center rounded-lg text-gray-400">No Image Available</div>
             )}
 
-            {/* Overlay Metrics */}
             <div className="grid grid-cols-3 gap-2 mt-4 text-center">
               <div className="bg-gray-50 p-2 rounded border border-gray-100">
                 <div className="text-xs text-gray-500 font-semibold">EAR (Eyes)</div>
-                {/* ✅ FIX 2: Explicit colors for values */}
                 <div className="font-mono font-bold text-red-600 text-lg">
                   {incident.earValue?.toFixed(3) ?? 'N/A'}
                 </div>
@@ -118,7 +116,7 @@ export const IncidentDetailsPage = () => {
 
         {/* Right Column: Detailed Data */}
         <div className="space-y-6">
-          {/* Driver & Vehicle Info */}
+          {/* Entity Information */}
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-gray-900">
             <h3 className="text-lg font-bold mb-4 border-b pb-2 text-gray-900">Entity Information</h3>
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
@@ -141,6 +139,46 @@ export const IncidentDetailsPage = () => {
                 </dd>
               </div>
             </dl>
+          </div>
+
+          {/* 🆕 New Section: Location & Telemetry */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-gray-900">
+            <h3 className="text-lg font-bold mb-4 border-b pb-2 text-gray-900 flex items-center gap-2">
+              <Globe size={20} className="text-blue-600" /> Location & Telemetry
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
+                  <MapPin size={20} />
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold text-gray-500 uppercase">Coordinates</dt>
+                  <dd className="mt-1 text-sm font-mono text-gray-900">
+                    {incident.latitude.toFixed(6)}, {incident.longitude.toFixed(6)}
+                  </dd>
+                  <a 
+                    href={`https://www.google.com/maps?q=${incident.latitude},${incident.longitude}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-blue-600 hover:underline mt-1 block"
+                  >
+                    View on Google Maps
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-orange-50 rounded-lg text-orange-600">
+                  <Gauge size={20} />
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold text-gray-500 uppercase">Speed at Impact</dt>
+                  <dd className="mt-1 text-2xl font-black text-gray-900">
+                    {incident.speed.toLocaleString()} <span className="text-sm font-normal text-gray-500">km/h</span>
+                  </dd>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Environmental Context */}

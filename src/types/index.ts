@@ -352,7 +352,7 @@ export interface FleetLiveLocationResponse {
   lastUpdateUtc: string;
 }
 
-// RESTORED: Matches C# FleetVehicleLiveStateResponse
+//  Matches C# FleetVehicleLiveStateResponse
 export interface FleetVehicleLiveStateResponse {
   vehicleId: number;
   plateNumber: string;
@@ -360,7 +360,7 @@ export interface FleetVehicleLiveStateResponse {
   liveLocation?: FleetLiveLocationResponse | null;
 }
 
-// RESTORED: Full details for the Evidence Feed
+// Full details for the Evidence Feed
 export interface IncidentDetails {
   id: string; // UUID
   message: string;
@@ -381,7 +381,11 @@ export interface IncidentDetails {
   driverState: number;
   s3DriverImagePath: string;
   s3RoadImagePath: string;
+  latitude: number;
+  longitude: number;
+  speed: number;
 }
+   
 
 // SignalR Hub Helper
 export interface VehicleTelemetryUpdate {

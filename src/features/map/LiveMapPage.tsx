@@ -1,8 +1,9 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from "react-leaflet";
+import { MapContainer, TileLayer,  Popup, useMap, Polyline } from "react-leaflet";
 import { useSignalR } from "../../context/SignalRContext";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { useEffect, useMemo } from "react";
+import { MovingMarker } from "./components/MovingMarker";
 
 // Define a custom Vehicle Icon
 const VehicleIcon = L.icon({
@@ -107,14 +108,8 @@ export const LiveMapPage = ({ plannedRoute }: LiveMapPageProps) => {
 
           {vehicles.map((vehicle) => {
             if (!vehicle.liveLocation) return null;
-            return (
-              <Marker
-                key={vehicle.vehicleId}
-                position={[
-                  vehicle.liveLocation.latitude,
-                  vehicle.liveLocation.longitude,
-                ]}
-              >
+            return (              
+              <MovingMarker key={vehicle.vehicleId} vehicle={vehicle}>
                 <Popup>
                   <div className="text-slate-900 p-1">
                     <div className="font-bold border-b border-slate-200 pb-1 mb-1">
@@ -126,7 +121,7 @@ export const LiveMapPage = ({ plannedRoute }: LiveMapPageProps) => {
                     </div>
                   </div>
                 </Popup>
-              </Marker>
+              </MovingMarker>
             );
           })}
         </MapContainer>
